@@ -59,6 +59,18 @@ public class PacketBuffer
 	}
 	
 	/**
+	 * 获取一个基本的ByteBuffer
+	 * @param $length
+	 * @return
+	 */
+	public static ByteBuffer getBaseBA(int $length)
+	{
+		ByteBuffer __bf = ByteBuffer.allocate($length);
+		__bf.order(endian);
+		return __bf;
+	}
+	
+	/**
 	 * 返回最终要发送的数据，在要发送的数据中加入首位验证码和时间戳
 	 * @param $methodCode 发送的方法代码
 	 * @param $bytes 要发送的数据body
@@ -70,8 +82,7 @@ public class PacketBuffer
 		int __bodyLen = $bytes.length;
 		//所有信息的长度
 		int __size = PRE_MASK_LEN + SUF_MASK_LEN + METHOD_CODE_LEN + 4 + __bodyLen;
-		ByteBuffer __buffer = ByteBuffer.allocate(__size);
-		__buffer.order(ByteOrder.LITTLE_ENDIAN);
+		ByteBuffer __buffer = getBaseBA(__size);
 		//写入前置校验码
 		__buffer.put((byte) (getRandom() & MASK1));
 		__buffer.put((byte) (getRandom() & MASK2));
@@ -92,8 +103,7 @@ public class PacketBuffer
 	
 	public PacketBuffer()
 	{
-		_buf = ByteBuffer.allocate(CAPACITY);
-		_buf.order(endian);
+		_buf = getBaseBA(CAPACITY);
 	}
 	
 	/**
@@ -162,7 +172,7 @@ public class PacketBuffer
 					//读取信息主体中的数据，读取的长度从主体信息长度中减去方法名占用的长度
 					byte[] __msgBody = new byte[__bodyLen - METHOD_CODE_LEN];
 					_buf.get(__msgBody, 0, __msgBody.length);  
-					ByteBuffer __bodyBuffer = ByteBuffer.allocate(__msgBody.length);
+					ByteBuffer __bodyBuffer = getBaseBA(__msgBody.length);
 					__bodyBuffer.order(endian);
 					__bodyBuffer.put(__msgBody);
 					__bodyBuffer.clear();

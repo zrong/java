@@ -1,11 +1,14 @@
 package org.zengrong.utils;
 
-import image.MaskType;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+/**
+ * 位图相关工具类
+ * @author zrong
+ * 创建日期：2012-10-09
+ */
 public class BitmapUtil
 {
 

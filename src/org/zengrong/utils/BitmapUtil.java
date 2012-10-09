@@ -1,5 +1,7 @@
 package org.zengrong.utils;
 
+import image.MaskType;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -84,5 +86,31 @@ public class BitmapUtil
 		__graphic.drawRenderedImage($image, null);
 		__graphic.dispose();
 		return __image; 
+	}
+	
+	/**
+	 * 生成带有蒙版的图像
+	 * @param $image
+	 * @param $isHorizonal true使用横向蒙版，false使用纵向蒙版
+	 */
+	public static BufferedImage getMaskedImage(BufferedImage $image, boolean $isHorizonal)
+	{
+		int __w = $image.getWidth();
+		int __h = $image.getHeight();
+		int[] __sourceARGB = $image.getRGB(0, 0, __w, __h, null, 0, __w);
+		
+		int[] __imgARGB = BitmapUtil.getRGBs(__sourceARGB);
+		int[] __maskARGB = BitmapUtil.getMixRGBs(__sourceARGB);
+		if($isHorizonal)
+		{
+			BufferedImage __mix = new BufferedImage(__w*2, __h, BufferedImage.TYPE_INT_RGB);
+			__mix.setRGB(0, 0, __w, __h, __imgARGB, 0, __w);
+			__mix.setRGB(__w, 0, __w, __h, __maskARGB, 0, __w);
+			return __mix;
+		}
+		BufferedImage __mix = new BufferedImage(__w, __h*2, BufferedImage.TYPE_INT_RGB);
+		__mix.setRGB(0, 0, __w, __h, __imgARGB, 0, __w);
+		__mix.setRGB(0, __h, __w, __h, __maskARGB, 0, __w);
+		return __mix;
 	}
 }
